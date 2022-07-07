@@ -111,12 +111,13 @@ def verify_decode_jwt(token):
 
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
-                        raise AuthError({
-                            'code': 'invalid_claims',
-                            'description': 'Permissions not included in JWT.'
-                        }, 400)
+        raise AuthError({
+            'code': 'invalid_claims',
+            'description': 'Permissions not included in JWT.'
+        }, 400)
 
     if permission not in payload['permissions']:
+        abort(403)
         raise AuthError({
             'code': 'unauthorized',
             'description': 'Permission not found.'
@@ -140,8 +141,3 @@ def requires_auth(permissions=''):
         return wrapper
     return requires_auth_decorator
 
-# @app.route('/headers')
-# @requires_auth('get:image')
-# def headers(payload):
-#     print(payload)
-#     return 'Access Granted'
