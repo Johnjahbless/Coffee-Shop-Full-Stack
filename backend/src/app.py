@@ -34,7 +34,7 @@ CORS(app)
 @requires_auth('get:drinks')
 def getDrink(payload):
     drinks = Drink.query.order_by(Drink.id).all()
-    print(drinks)
+
     try:
         formattedDrink = [drink.short() for drink in drinks ]
         return {"success": True, "drinks": formattedDrink}
@@ -87,17 +87,21 @@ def createNewDrink(payload):
         # Get each data from the body object
         newTitle = body.get("title", None)
         newRecipe = body.get("recipe", None)
-        a = json.dumps(newRecipe)
-        list.append(a)
-        a = ' '.join(str(x) for x in list)
-        f = "[" + a + "]"
-        print(f)
+
+        #using json dump to convert object properties to double quotes
+        recipeDump = json.dumps(newRecipe)
+        #add to the empty array
+        list.append(recipeDump)
+        #convert the list to a string
+        stringRecipe = ' '.join(str(x) for x in list)
+        #concatenate braces to facilitate json fetching
+        formattedRecipe = "[" + stringRecipe + "]"
 
 
         try:
             drink = Drink(
                 title = newTitle,
-                recipe = f
+                recipe = formattedRecipe
             )
             drink.insert()
 
