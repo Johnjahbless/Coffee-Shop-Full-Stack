@@ -10,7 +10,7 @@ ALGORITHMS = ['RS256']
 API_AUDIENCE = 'dev'
 
 ## AuthError Exception
-'''
+''' 
 AuthError Exception
 A standardized way to communicate auth failure modes
 '''
@@ -28,6 +28,7 @@ def get_token_auth_header():
     """
     auth = request.headers.get('Authorization', None)
     if not auth:
+        abort(401)
         raise AuthError({
             'code': 'authorization_header_missing',
             'description': 'Authorization header is expected.'
