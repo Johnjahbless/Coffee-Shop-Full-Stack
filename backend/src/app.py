@@ -31,8 +31,7 @@ CORS(app)
 '''
 
 @app.route('/drinks')
-@requires_auth('get:drinks')
-def getDrink(payload):
+def getDrink():
     drinks = Drink.query.order_by(Drink.id).all()
 
     try:
