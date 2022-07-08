@@ -18,7 +18,7 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this funciton will add one
 ''' 
-db_drop_and_create_all()
+#db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -106,7 +106,7 @@ def createNewDrink(payload):
             print(e)
             abort(422)
         
-        drinks = Drink.query.order_by(Drink.id).all()
+        drinks = Drink.query.filter(Drink.title == newTitle).all()
         formattedDrink = [drink.long() for drink in drinks ]
 
         return {"success": True, "drinks": formattedDrink}
@@ -147,7 +147,10 @@ def updateDrink(payload, id):
             print(e)
             abort(402)
         
-        return {"success": True, "drinks": 'drinks'}
+        drinks = Drink.query.filter(Drink.title == title).all()
+        formattedDrink = [drink.long() for drink in drinks ]
+
+        return {"success": True, "drinks": formattedDrink}
 
 '''
 @TODO implement endpoint
