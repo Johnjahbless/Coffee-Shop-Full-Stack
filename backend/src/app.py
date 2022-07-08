@@ -17,7 +17,7 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this funciton will add one
-'''
+''' 
 db_drop_and_create_all()
 
 # ROUTES
@@ -34,8 +34,8 @@ db_drop_and_create_all()
 @requires_auth('get:drinks')
 def getDrink(payload):
     drinks = Drink.query.order_by(Drink.id).all()
+    print(drinks)
     try:
-
         formattedDrink = [drink.short() for drink in drinks ]
         return {"success": True, "drinks": formattedDrink}
 
@@ -78,20 +78,26 @@ def getDrinkDetail(payload):
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
 def createNewDrink(payload):
-
+        drinks = ''
         # Get data from the received request
         body = request.get_json()
+
+        list = []
 
         # Get each data from the body object
         newTitle = body.get("title", None)
         newRecipe = body.get("recipe", None)
-
+        a = json.dumps(newRecipe)
+        list.append(a)
+        a = ' '.join(str(x) for x in list)
+        f = "[" + a + "]"
+        print(f)
 
 
         try:
             drink = Drink(
                 title = newTitle,
-                recipe = newRecipe
+                recipe = f
             )
             drink.insert()
 
@@ -100,7 +106,10 @@ def createNewDrink(payload):
             print(e)
             abort(422)
         
-        return {"success": True, "drinks": 'drinks'}
+        drinks = Drink.query.order_by(Drink.id).all()
+        formattedDrink = [drink.long() for drink in drinks ]
+
+        return {"success": True, "drinks": formattedDrink}
 
 '''
 @TODO implement endpoint
