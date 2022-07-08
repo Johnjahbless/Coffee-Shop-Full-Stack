@@ -33,9 +33,15 @@ db_drop_and_create_all()
 @app.route('/drinks')
 @requires_auth('get:drinks')
 def getDrink(payload):
-    drink = Drink.Query.all()
-    print(drink)
-    return {"success": True, "drinks": 'drinks'}
+    drinks = Drink.query.order_by(Drink.id).all()
+    try:
+
+        formattedDrink = [drink.short() for drink in drinks ]
+        return {"success": True, "drinks": formattedDrink}
+
+    except Exception as e:
+        print(e)
+        abort(422)    
 
 '''
 @TODO implement endpoint
@@ -49,8 +55,16 @@ def getDrink(payload):
 @app.route('/drinks-detail')
 @requires_auth('get:drinks-detail')
 def getDrinkDetail(payload):
-    print(payload)
-    return {"success": True, "drinks": 'drinks'}
+    
+    drinks = Drink.query.order_by(Drink.id).all()
+    try:
+
+        formattedDrink = [drink.long() for drink in drinks ]
+        return {"success": True, "drinks": formattedDrink}
+
+    except Exception as e:
+        print(e)
+        abort(422)    
 
 '''
 @TODO implement endpoint
