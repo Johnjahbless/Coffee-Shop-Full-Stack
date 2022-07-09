@@ -1,6 +1,6 @@
 import os
-from turtle import title
 from flask import Flask, request, jsonify, abort
+from werkzeug.http import HTTP_STATUS_CODES
 from sqlalchemy import exc
 import json
 from flask_cors import CORS
@@ -36,7 +36,7 @@ def getDrink():
 
     try:
         formattedDrink = [drink.short() for drink in drinks ]
-        return {"success": True, "drinks": formattedDrink}
+        return json.dumps({"success": True, "drinks": formattedDrink})
 
     except Exception as e:
         print(e)
@@ -114,6 +114,7 @@ def createNewDrink(payload):
 
         return {"success": True, "drinks": formattedDrink}
 
+
 '''
 @TODO implement endpoint
     PATCH /drinks/<id>
@@ -150,10 +151,8 @@ def updateDrink(payload, id):
             print(e)
             abort(402)
         
-        drinks = Drink.query.filter(Drink.title == title).all()
-        formattedDrink = [drink.long() for drink in drinks ]
 
-        return {"success": True, "drinks": formattedDrink}
+        return {"success": True, "drinks": drink.long()}
 
 '''
 @TODO implement endpoint
@@ -192,6 +191,14 @@ def deleteDrink(payload, id):
 Example error handling for unprocessable entity
 '''
 
+@app.errorhandler(AuthError)
+def handle_error(e):
+    return (
+        jsonify({"message": HTTP_STATUS_CODES.get(e.status_code),
+        "description": e.error,
+        "error": e.status_code}),
+        e.status_code
+    )
 
 @app.errorhandler(404)
 def not_found(error):
