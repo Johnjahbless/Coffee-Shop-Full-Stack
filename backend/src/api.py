@@ -53,7 +53,7 @@ def getDrink():
 
 @app.route('/drinks-detail')
 @requires_auth('get:drinks-detail')
-def getDrinkDetail(payload):
+def get_drinks_detail(payload):
     
     drinks = Drink.query.order_by(Drink.id).all()
     try:
@@ -81,27 +81,20 @@ def createNewDrink(payload):
         # Get data from the received request
         body = request.get_json()
 
-        list = []
 
         # Get each data from the body object
         newTitle = body.get("title", None)
         newRecipe = body.get("recipe", None)
-
-        #using json dump to convert object properties to double quotes
-        recipeDump = json.dumps(newRecipe)
-        #add to the empty array
-        list.append(recipeDump)
-        #convert the list to a string
-        stringRecipe = ' '.join(str(x) for x in list)
-        #concatenate braces to facilitate json fetching
-        formattedRecipe = "[" + stringRecipe + "]"
+      
 
 
         try:
-            drink = Drink(
-                title = newTitle,
-                recipe = formattedRecipe
-            )
+            if isinstance(newRecipe, dict):
+                recipe = [newRecipe]
+
+            drink = Drink()
+            drink.title = newTitle
+            drink.recipe = json.dumps(recipe)
             drink.insert()
 
 
